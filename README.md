@@ -1,4 +1,4 @@
-#Predis Adapter for Stash
+# Predis Adapter for Stash
 
 Because Stash is great but did happen to neglect the usage of Predis in real world applications.
 
