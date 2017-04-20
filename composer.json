@@ -1,0 +1,16 @@
+{
+    "name": "bandit.io/bandit-stash-predis-adapter",
+    "description": "Stash Predis Driver",
+    "type": "library",
+    "require": {
+        "tedivm/stash": "^0.14.1",
+        "predis/predis": "^1.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nil Portugués Calderó",
+            "email": "nil.portugues@bandit.io"
+        }
+    ]
+}

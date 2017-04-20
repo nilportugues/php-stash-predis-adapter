@@ -1,0 +1,7 @@
+/vendor/
+.idea/
+/build/
+/app/var/cache/
+/app/var/sessions/
+.php_cs.cache
+/app/var/logs/
