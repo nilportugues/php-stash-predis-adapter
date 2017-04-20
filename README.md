@@ -24,7 +24,7 @@ backwards compatible.
     }
   ],
   "require": {
-    "bandit.io/stash-predis-adapter": "^1.0.0"
+    "bandit.io/bandit-stash-predis-adapter": "^1.0.0"
   }
 }
 ```
