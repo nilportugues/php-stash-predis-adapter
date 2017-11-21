@@ -1,5 +1,5 @@
 {
-    "name": "bandit.io/bandit-stash-predis-adapter",
+    "name": "nilportugues/stash-predis-adapter",
     "description": "Stash Predis Driver",
     "type": "library",
     "require": {
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Bandit\\Stash\\Driver\\" : "src/"
+            "NilPortugues\\Stash\\Driver\\" : "src/"
         }
     },
     "license": "MIT",
