@@ -1,6 +1,6 @@
 <?php
 
-namespace Bandit\Stash\Driver;
+namespace NilPortugues\Stash\Driver;
 
 use Stash;
 use Predis\Client;
