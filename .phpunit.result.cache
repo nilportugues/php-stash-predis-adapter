@@ -1,1 +1,1 @@
-{"version":1,"defects":{"PredisTest::testStoreAndGetData":4,"PredisTest::testClearData":4},"times":{"PredisTest::testStoreAndGetData":0,"PredisTest::testClearData":0}}
+{"version":1,"defects":{"PredisTest::testStoreAndGetData":4,"PredisTest::testClearData":4},"times":{"PredisTest::testStoreAndGetData":0.008,"PredisTest::testClearData":0.002}}

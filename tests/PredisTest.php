@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use NilPortugues\Stash\Driver\Predis;
 use Predis\Client;
 use PHPUnit\Framework\TestCase;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace NilPortugues\Stash\Driver;
 
 use Stash;
@@ -7,17 +9,6 @@ use Predis\Client;
 
 class Predis extends Stash\Driver\AbstractDriver
 {
-    /**
-     * @var Client
-     */
-    protected Client $predis;
-
-    /**
-     *
-     * The cache of indexed keys.
-     *
-     * @var array
-     */
     protected array $keyCache = [];
 
     protected array $redisArrayOptionNames = [
@@ -34,10 +25,8 @@ class Predis extends Stash\Driver\AbstractDriver
 
     /**
      * Predis constructor.
-     * @param Client $predis
      */
-    public function __construct(Client $predis) {
-       $this->predis = $predis;
+    public function __construct(protected Client $predis) {
     }
 
     protected function setOptions(array $options = []): void
@@ -50,15 +39,13 @@ class Predis extends Stash\Driver\AbstractDriver
      */
     public function __destruct()
     {
-        if ($this->predis instanceof Client) {
-            try {
-                $this->predis->disconnect();
-            } catch (\Exception $e) {
-                /*
-                 * \Redis::close will throw a \RedisException("Redis server went away") exception if
-                 * we haven't previously been able to connect to Redis or the connection has severed.
-                 */
-            }
+        try {
+            $this->predis->disconnect();
+        } catch (\Exception $e) {
+            /*
+             * \Redis::close will throw a \RedisException("Redis server went away") exception if
+             * we haven't previously been able to connect to Redis or the connection has severed.
+             */
         }
     }
 
@@ -67,13 +54,17 @@ class Predis extends Stash\Driver\AbstractDriver
      */
     public function getData($key)
     {
-        return unserialize($this->predis->get($this->makeKeyString($key)));
+        $value = $this->predis->get($this->makeKeyString($key));
+        if ($value === null) {
+            return false;
+        }
+        return unserialize($value);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function storeData($key, $data, $expiration): bool
+    public function storeData($key, $data, $expiration)
     {
         $store = serialize(['data' => $data, 'expiration' => $expiration]);
         if (is_null($expiration)) {
@@ -81,7 +72,7 @@ class Predis extends Stash\Driver\AbstractDriver
             return true;
         }
 
-        $ttl = $expiration - time();
+        $ttl = (int)$expiration - time();
 
         // Prevent us from even passing a negative ttl'd item to redis,
         // since it will just round up to zero and cache forever.
@@ -96,7 +87,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function clear($key = null): bool
+    public function clear($key = null)
     {
         if (is_null($key)) {
             $this->predis->flushDB();
@@ -117,7 +108,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function purge(): bool
+    public function purge()
     {
         return true;
     }
@@ -125,7 +116,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public static function isAvailable(): bool
+    public static function isAvailable()
     {
         return class_exists(Client::class, true);
     }
@@ -140,7 +131,7 @@ class Predis extends Stash\Driver\AbstractDriver
      * @param  bool   $path
      * @return string
      */
-    protected function makeKeyString($key, bool $path = false): string
+    protected function makeKeyString(array|string $key, bool $path = false): string
     {
         $key = \Stash\Utilities::normalizeKeys($key);
 
@@ -174,7 +165,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function isPersistent(): bool
+    public function isPersistent()
     {
         return true;
     }

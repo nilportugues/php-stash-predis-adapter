@@ -3,7 +3,7 @@
     "description": "Stash Predis Driver",
     "type": "library",
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "tedivm/stash": "^1.2.1",
         "predis/predis": "^3.0.1"
     },
