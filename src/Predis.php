@@ -10,7 +10,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * @var Client
      */
-    protected $predis;
+    protected Client $predis;
 
     /**
      *
@@ -18,9 +18,9 @@ class Predis extends Stash\Driver\AbstractDriver
      *
      * @var array
      */
-    protected $keyCache = array();
+    protected array $keyCache = [];
 
-    protected $redisArrayOptionNames = array(
+    protected array $redisArrayOptionNames = [
         "previous",
         "function",
         "distributor",
@@ -30,7 +30,7 @@ class Predis extends Stash\Driver\AbstractDriver
         "retry_interval",
         "lazy_connect",
         "connect_timeout",
-    );
+    ];
 
     /**
      * Predis constructor.
@@ -40,7 +40,7 @@ class Predis extends Stash\Driver\AbstractDriver
        $this->predis = $predis;
     }
 
-    protected function setOptions(array $options = array())
+    protected function setOptions(array $options = []): void
     {
         //nothing is OK :)
     }
@@ -73,28 +73,30 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function storeData($key, $data, $expiration)
+    public function storeData($key, $data, $expiration): bool
     {
-        $store = serialize(array('data' => $data, 'expiration' => $expiration));
+        $store = serialize(['data' => $data, 'expiration' => $expiration]);
         if (is_null($expiration)) {
-            return $this->predis->set($this->makeKeyString($key), $store);
-        } else {
-            $ttl = $expiration - time();
-
-            // Prevent us from even passing a negative ttl'd item to redis,
-            // since it will just round up to zero and cache forever.
-            if ($ttl < 1) {
-                return true;
-            }
-
-            return $this->predis->setex($this->makeKeyString($key), $ttl, $store);
+            $this->predis->set($this->makeKeyString($key), $store);
+            return true;
         }
+
+        $ttl = $expiration - time();
+
+        // Prevent us from even passing a negative ttl'd item to redis,
+        // since it will just round up to zero and cache forever.
+        if ($ttl < 1) {
+            return true;
+        }
+
+        $this->predis->setex($this->makeKeyString($key), $ttl, $store);
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function clear($key = null)
+    public function clear($key = null): bool
     {
         if (is_null($key)) {
             $this->predis->flushDB();
@@ -107,7 +109,7 @@ class Predis extends Stash\Driver\AbstractDriver
         $this->predis->incr($keyString); // increment index for children items
         //$this->redis->delete($keyReal); // remove direct item.
         $this->predis->del([$keyReal]);
-        $this->keyCache = array();
+        $this->keyCache = [];
 
         return true;
     }
@@ -115,7 +117,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function purge()
+    public function purge(): bool
     {
         return true;
     }
@@ -123,7 +125,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public static function isAvailable()
+    public static function isAvailable(): bool
     {
         return class_exists(Client::class, true);
     }
@@ -138,7 +140,7 @@ class Predis extends Stash\Driver\AbstractDriver
      * @param  bool   $path
      * @return string
      */
-    protected function makeKeyString($key, $path = false)
+    protected function makeKeyString($key, bool $path = false): string
     {
         $key = \Stash\Utilities::normalizeKeys($key);
 
@@ -172,7 +174,7 @@ class Predis extends Stash\Driver\AbstractDriver
     /**
      * {@inheritdoc}
      */
-    public function isPersistent()
+    public function isPersistent(): bool
     {
         return true;
     }
