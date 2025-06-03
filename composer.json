@@ -3,12 +3,14 @@
     "description": "Stash Predis Driver",
     "type": "library",
     "require": {
-        "tedivm/stash": "^0.14.1",
-        "predis/predis": "^1.1"
+        "php": "^8.0",
+        "tedivm/stash": "^1.2.1",
+        "predis/predis": "^3.0.1"
     },
     "autoload": {
         "psr-4": {
-            "NilPortugues\\Stash\\Driver\\" : "src/"
+            "NilPortugues\\Stash\\Driver\\": "src/",
+            "NilPortugues\\Stash\\Driver\\Tests\\": "tests/"
         }
     },
     "license": "MIT",
@@ -17,5 +19,8 @@
             "name": "Nil Portugués Calderó",
             "email": "nil.portugues@bandit.io"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^9"
+    }
 }
